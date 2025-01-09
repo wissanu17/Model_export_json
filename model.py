@@ -9,13 +9,14 @@ train_data = dataset['train'].train_test_split(test_size=0.1)
 train_data, val_data = train_data['train'], train_data['test']
 
 # โหลด Tokenizer และ Model
-tokenizer = T5Tokenizer.from_pretrained("t5-small")
+#tokenizer = T5Tokenizer.from_pretrained("t5-small")
+tokenizer = T5Tokenizer.from_pretrained("t5-small", legacy=False)
 model = T5ForConditionalGeneration.from_pretrained("t5-small")
 
 # เตรียมข้อมูลสำหรับโมเดล
 def preprocess_data(examples):
     inputs = [ex['input'] for ex in examples]
-    targets = [ex['output'] for ex in examples]
+    targets = [json.dumps(ex['output']) for ex in examples]
     model_inputs = tokenizer(inputs, max_length=512, truncation=True, padding="max_length")
     labels = tokenizer(targets, max_length=512, truncation=True, padding="max_length").input_ids
     model_inputs['labels'] = labels
@@ -45,4 +46,5 @@ trainer = Trainer(
     eval_dataset=val_data
 )
 
-trainer.train()
+if __name__ == "__main__":
+    trainer.train()

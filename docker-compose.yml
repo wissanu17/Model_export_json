@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  ai-model:
+    build: .
+    container_name: ai_model_container
+    volumes:
+      - .:/app
+    command: python model.py
+  use-model:
+    build: .
+    container_name: use_model_container
+    volumes:
+      - .:/app
+    command: python use.py
